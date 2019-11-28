@@ -38,8 +38,8 @@ router.get("/users", async (req, res, _next) => {
     }
 
     const columns = fields.length > 0 ? fields.join(",") : "*";
-    const offset = req.query.offset || 0;
-    const limit = req.query.limit || 20;
+    const offset = /^[\d]+$/.test(req.query.offset) ? req.query.offset : 0;
+    const limit = /^[\d]+$/.test(req.query.limit) ? req.query.limit : 20;
     const sql =
         "SELECT " +
         columns +
@@ -74,8 +74,8 @@ router.get("/users/:u", async (req, res, _next) => {
         text: sql,
         values: [req.params.u.slice(0, 3), req.params.u.slice(3)],
     });
-    console.log(result.rows[0]);
-    res.json(result.rows[0]);
+    console.log(result.rows[0] || []);
+    res.json(result.rows[0] || []);
 });
 
 export = router;
